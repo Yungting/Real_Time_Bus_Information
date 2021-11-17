@@ -1,8 +1,3 @@
-// 抓取縣市資料
-if (!localStorage.getItem('cityList')) {
-    getCityList()
-}
-
 // 呼叫公車 API
 function getBusResult(url, query, data) {
     let queryA = '';
@@ -22,10 +17,11 @@ function getBusResult(url, query, data) {
 }
 
 // 抓取縣市資料
-function getCityList() {
-    axios.get('https://gist.motc.gov.tw/gist_api/V3/Map/Basic/City?$format=JSON')
+async function getCityList() {
+    await axios.get('https://gist.motc.gov.tw/gist_api/V3/Map/Basic/City?$format=JSON')
         .then((response) => {
             localStorage.setItem('cityList', JSON.stringify(response.data))
+            return true
         })
         .catch((error) => {
             console.error(error)

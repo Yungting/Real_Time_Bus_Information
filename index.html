@@ -41,16 +41,25 @@
     <script src="./js/common.js"></script>
 
     <script>
+        if (!localStorage.getItem('cityList')) {
+            // 抓取縣市資料
+            getCityList().then(() => {
+                setCitySelect()
+            })
+        } else {
+            setCitySelect()
+        }
+
         // 寫入縣市
-        const city = document.getElementById('city');
-        let optionText = '<option value="">請選擇</option>';
-        if (localStorage.getItem('cityList')) {
+        function setCitySelect() {
+            const city = document.getElementById('city');
+            let optionText = '<option value="">請選擇</option>';
             const cityList = JSON.parse(localStorage.getItem('cityList'));
             cityList.forEach(item => {
                 optionText += `<option value="${item.City}">${item.CityName}</option>`
             });
+            city.innerHTML = optionText;
         }
-        city.innerHTML = optionText;
 
         // 顯示路線名稱
         function showRouteList() {
