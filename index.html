@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- <link rel="stylesheet" href="./css/reset.css"> -->
+    <link rel="stylesheet" href="./css/bootstrap.css">
+    <link rel="stylesheet" href="./css/fontawesome.css">
+    <link rel="stylesheet" href="./css/all.css">
+    <title>Tomato Bus</title>
+</head>
+
+<body>
+    <div class="container" style="margin: 0 auto; padding: 20px 0;">
+        <select id="city" onchange="showRouteList()"></select>
+        <select id="route" onchange="showRouteList()">
+            <option value="">請選擇路線類型</option>
+            <option value="11">市區公車</option>
+            <option value="12">公路客運</option>
+            <option value="13">國道客運</option>
+            <option value="14">接駁車</option>
+        </select>
+        <br>
+        <br>
+        <div id="routeList" class="row text-center"></div>
+    </div>
+
+
+    <!-- axios -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.4/axios.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsSHA/3.2.0/sha.js"></script>
+    <!-- jQuery -->
+    <script src="./js/jquery-3.4.1.min.js"></script>
+    <!-- Boostrap -->
+    <script src="./js/bootstrap.bundle.js"></script>
+    <script src="./js/bootstrap.js"></script>
+    <script src="./js/fontawesome.js"></script>
+    <!-- common -->
+    <script src="./js/common.js"></script>
+
+    <script>
+        // 寫入縣市
+        const city = document.getElementById('city');
+        let optionText = '<option value="">請選擇</option>';
+        if (localStorage.getItem('cityList')) {
+            const cityList = JSON.parse(localStorage.getItem('cityList'));
+            cityList.forEach(item => {
+                optionText += `<option value="${item.City}">${item.CityName}</option>`
+            });
+        }
+        city.innerHTML = optionText;
+
+        // 顯示路線名稱
+        function showRouteList() {
+            const routeList = document.getElementById('routeList');
+            const citySelect = document.getElementById('city').value;
+            const routeSelect = document.getElementById('route').value;
+            let routeText = '';
+            let query = {
+                top: 50
+            }
+            if (routeSelect) {
+                query.filter = `BusRouteType eq ${routeSelect}`
+            }
+            getBusResult('Route/City/', [citySelect], query).then((data) => {
+                console.log(data)
+                data.forEach(item => {
+                    routeText += `<div class="col-3 border p-3">${item.RouteName.Zh_tw}<br>${item.DepartureStopNameZh || ''}到${item.DestinationStopNameZh || ''}</div>`
+                })
+                routeList.innerHTML = routeText;
+            })
+        }
+
+        // 範例
+        // getBusResult('RealTimeByFrequency/Streaming/City/', ['Hsinchu'], {
+        //     top: 10
+        // }).then((data) => {
+        //     console.log(data)
+        // })
+    </script>
+</body>
+
+</html>
