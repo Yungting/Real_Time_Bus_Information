@@ -59,6 +59,10 @@
     <script>
         // 縣市所有的路線資訊
         let cityRouteList = []
+        // 目前選取的路線
+        let routeInfo = []
+        // 目前為去程 or 回程
+        let directionType = 0
         // 去程公車站牌
         let deaprturStopList = []
         // 返程公車站牌
@@ -97,18 +101,17 @@
             getBusResult('Route/City/', [citySelect], query).then((data) => {
                 cityRouteList = data
                 data.forEach(item => {
-                    routeText += `<div class="col-3 border p-3" onclick="showRealTimeInfo('${item.RouteUID}')">${item.RouteName.Zh_tw}<br>${item.DepartureStopNameZh || ''}到${item.DestinationStopNameZh || ''}</div>`
+                    routeText += `<div class="col-3 border p-3" onclick="showBusInfo('${item.RouteUID}')">${item.RouteName.Zh_tw}<br>${item.DepartureStopNameZh || ''}到${item.DestinationStopNameZh || ''}</div>`
                 })
                 routeList.innerHTML = routeText;
             })
         }
 
-        // 顯示即時公車資訊
-        function showRealTimeInfo(routeUID) {
+        // 顯示公車資訊
+        function showBusInfo(routeUID) {
             const citySelect = document.getElementById('city').value;
             const departureBtn = document.getElementById('departureBtn');
             const returnBtn = document.getElementById('returnBtn');
-            let routeInfo = []
 
             // 去程返程按鈕
             routeInfo = cityRouteList.find(item => {
@@ -116,7 +119,7 @@
             })
 
             // 路線資訊
-            getBusResult('DisplayStopOfRoute/City/', [citySelect, routeInfo.RouteName.Zh_tw]).then((data) => {
+            getBusResult('StopOfRoute/City/', [citySelect, routeInfo.RouteName.Zh_tw]).then((data) => {
                 // 去返程欄位設定 (API)
                 const directionInfo = {
                     0: '去程',
@@ -136,7 +139,6 @@
                     if (item.Direction === 0 || item.Direction === 2) {
                         departureBtn.innerText = `去程：往${routeInfo.DestinationStopNameZh}` || ''
                         departureStopList = item.Stops
-                        showBusStopList('departure')
                         departureB = true
                     }
                     else if (item.Direction === 1) {
@@ -145,19 +147,22 @@
                         returnB = true
                     }
                 })
+                showBusStopList('departure')
                 departureBtn.style.display = departureB ? 'inline-block' : 'none'
                 returnBtn.style.display = returnB ? 'inline-block' : 'none'
             })
         }
 
         // 顯示指定路線公車站牌
-        function showBusStopList(val) {
+        async function showBusStopList(direction) {
             let stops = []
             let stopText = ''
             const realtimeBusInfo = document.getElementById('realtimeBusInfo');
-            if (val === 'departure') {
+            if (direction === 'departure') {
+                directionType = 0
                 stops = departureStopList
-            } else if (val === 'return') {
+            } else if (direction === 'return') {
+                directionType = 1
                 stops = returnStopList
             }
             if (stops.length) {
@@ -165,19 +170,37 @@
                     stopText += `<tr id="stop-${stop.StopUID}">` +
                         `<td class="stopName">${stop.StopName.Zh_tw}</td>` +
                         `<td class="stopTime"></td>` +
-                        `<td class="busRoad"></td></tr>`
+                        `<td class="stopStatus"></td></tr>`
                 })
                 realtimeBusInfo.innerHTML = stopText
+                realTime() // 公車即時資訊
             }
         }
-        // 指定城市+路線 路線站序!!先排路線
-        // GET /v2/Bus/DisplayStopOfRoute/City/{City}/{RouteName}
 
-        // 指定城市+路線 預估到站時間!!再抓站牌時間
-        // GET /v2/Bus/EstimatedTimeOfArrival/City/{City}/{RouteName}
-
-        // 指定城市+路線 公車正在抵達的站牌
-        // GET /v2/Bus/RealTimeNearStop/City/{City}/{RouteName}
+        // 公車即時資訊
+        function realTime() {
+            const citySelect = document.getElementById('city').value;
+            const realtimeBusInfo = document.getElementById('realtimeBusInfo');
+            let query = {}
+            let stops = []
+            let stopText = ''
+            
+            query.filter = directionType ? 'Direction eq 1' : 'Direction eq 0 or Direction eq 2'
+            getBusResult('EstimatedTimeOfArrival/City/', [citySelect, routeInfo.RouteName.Zh_tw], query).then((data) => {
+                console.log(11, data)
+                data.forEach((item) => {
+                    const stopUID = document.getElementById(`stop-${item.StopUID}`);
+                    if (stopUID) {
+                        // 發車時間
+                        stopUID.querySelector('.stopTime').innerText = item.EstimateTime ? showTime(item.EstimateTime) : showStopStatus(item.StopStatus)
+                        // 公車是否到該站
+                        if (item.PlateNumb && item.PlateNumb !== '-1') {
+                            stopUID.querySelector('.stopStatus').innerText = item.PlateNumb
+                        }
+                    }
+                })
+            })
+        }
 
         // 指定城市+路線 班表+班距
         // GET /v2/Bus/Schedule/City/{City}/{RouteName}

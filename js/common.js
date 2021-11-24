@@ -28,6 +28,29 @@ async function getCityList() {
         })
 }
 
+// 站牌狀態
+function showStopStatus(stopStatus) {
+    switch (stopStatus) {
+        case 0 :
+            return '正常'
+        case 1 :
+            return '尚未發車'
+        case 2 :
+            return '交管不停靠'
+        case 3 :
+            return '末班車已過'
+        case 4 :
+            return '今日未營業'
+    }
+}
+
+// 秒換算成分
+function showTime(sec) {
+    let min = 0
+    min = Math.round(sec / 60)
+    return min > 0 ? min + '分' : sec + '秒'
+}
+
 // API Header 
 function getAuthorizationHeader() {
     let AppID = 'e5c0077bdc284fca9d2e375fc415fec3';
