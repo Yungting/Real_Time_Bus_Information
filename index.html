@@ -187,16 +187,25 @@
             
             query.filter = directionType ? 'Direction eq 1' : 'Direction eq 0 or Direction eq 2'
             getBusResult('EstimatedTimeOfArrival/City/', [citySelect, routeInfo.RouteName.Zh_tw], query).then((data) => {
-                console.log(11, data)
+                console.log(6666, data)
                 data.forEach((item) => {
                     const stopUID = document.getElementById(`stop-${item.StopUID}`);
                     if (stopUID) {
                         // 發車時間
                         stopUID.querySelector('.stopTime').innerText = item.EstimateTime ? showTime(item.EstimateTime) : showStopStatus(item.StopStatus)
-                        // 公車是否到該站
-                        if (item.PlateNumb && item.PlateNumb !== '-1') {
-                            stopUID.querySelector('.stopStatus').innerText = item.PlateNumb
-                        }
+                    }
+                })
+            })
+
+            // 公車目前所在站牌
+            getBusResult('RealTimeNearStop/Streaming/City/', [citySelect, routeInfo.RouteName.Zh_tw], query).then((data) => {
+                console.log(7777, data)
+                data.forEach((item) => {
+                    const stopUID = document.getElementById(`stop-${item.StopUID}`);
+                    if (item.A2EventType) {
+                        stopUID.querySelector('.stopStatus').innerText = item.PlateNumb
+                    } else {
+                        stopUID.nextElementSibling.querySelector('.stopStatus').innerText = item.PlateNumb
                     }
                 })
             })
