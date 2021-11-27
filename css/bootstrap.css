@@ -361,7 +361,7 @@ h1, .h1 {
 }
 
 h2, .h2 {
-  font-size: 24px;
+  font-size: 20px;
 }
 
 h3, .h3 {
@@ -2402,7 +2402,7 @@ textarea.form-control {
 
 .btn:focus, .btn.focus {
   outline: 0;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow: none;
 }
 
 .btn.disabled, .btn:disabled {

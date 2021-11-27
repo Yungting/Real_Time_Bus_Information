@@ -170,7 +170,7 @@ input[type="radio"]:checked::before {
 
 /* Search Result - City */
 .search-result-city {
-    margin-top: 105px;
+    padding: 42px 14px;
 }
 
 .result-title {
@@ -181,10 +181,10 @@ input[type="radio"]:checked::before {
 .result-title::before {
     content: "";
     position: absolute;
-    top: calc(50% - 12px);
+    top: calc(50% - 9px);
     left: 0;
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     background-color: var(--theme-black);
 }
 
@@ -206,16 +206,64 @@ input[type="radio"]:checked::before {
     margin-left: 74px;
 }
 
+.route-list {
+    margin-top: calc(37px - 0.5rem);
+}
+
+.route-list .col {
+    -ms-flex: 0 0 20%;
+    flex: 0 0 20%;
+    max-width: 20%;
+    margin-bottom: 32px;
+}
+
+.route.card {
+    padding: 22px;
+    border-radius: 17px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: .3s;
+}
+
+.route.card:hover {
+    border-color: transparent;
+    box-shadow: 0px 0px 0px 5px var(--theme-primary);
+    transform: scale(1.02);
+}
+
+.route.card .route-name {
+    margin-bottom: 12px;
+}
+
+.more {
+    color: var(--text-color-gray1);
+    cursor: pointer;
+}
+
+.more span {
+    margin-left: 8px;
+    font-size: 0.8rem;
+}
 
 /* RWD */
 @media (max-width: 1200px) {
-
+    .route-list .col {
+        -ms-flex: 0 0 25%;
+        flex: 0 0 25%;
+        max-width: 25%;
+    }
 }
 
 @media (max-width: 992px) {
     .header {
         padding-left: 0;
         text-align: center;   
+    }
+
+    .route-list .col {
+        -ms-flex: 0 0 33.333333%;
+        flex: 0 0 33.33333%;
+        max-width: 33.33333%;
     }
 
     .search-type {
@@ -240,10 +288,6 @@ input[type="radio"]:checked::before {
 
     .search-btn {
         width: auto;
-    }
-
-    .search-result-city {
-        max-width: 500px;
     }
 }
 
