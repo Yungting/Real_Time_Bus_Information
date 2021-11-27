@@ -33,13 +33,13 @@
             <div class="search-type">
                 <div class="form-check form-check-inline font-label1 mr-4">
                     <label class="custom-form-label">
-                        <input type="radio" name="radio" checked />
+                        <input type="radio" value="city" name="search" onclick="show('citySearch')" checked />
                         <span>公車號碼</span>
                     </label>
                 </div>
                 <div class="form-check form-check-inline font-label1">
                     <label class="custom-form-label">
-                        <input type="radio" name="radio" />
+                        <input type="radio" value="stop" name="search" onclick="show('stopSearch')" />
                         <span>站牌</span>
                     </label>
                 </div>
@@ -51,20 +51,16 @@
                 </div>
                 <div class="row font-label1">
                     <div class="col-auto">
-                        <select class="custom-select">
-                            <option selected>請選擇</option>
-                            <option value="1">台北市</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
-                        </select>
+                        <select id="city" class="custom-select" onchange="showRouteList()"></select>
                         <span class="select-icon"><i class="fas fa-chevron-down"></i></span>
                     </div>
                     <div class="col-auto">
-                        <select class="custom-select">
+                        <select id="route" class="custom-select" onchange="showRouteList()">
                             <option selected>請選擇</option>
-                            <option value="1">一般公車</option>
-                            <option value="2">Two</option>
-                            <option value="3">Three</option>
+                            <option value="11">市區公車</option>
+                            <option value="14">接駁車</option>
+                            <!-- <option value="12">公路客運</option>
+                            <option value="13">國道客運</option> -->
                         </select>
                         <span class="select-icon"><i class="fas fa-chevron-down"></i></span>
                     </div>
@@ -89,61 +85,14 @@
             </div>
             <!-- 符合路線 -->
             <div class="container p-0 route-list">
-                <div class="row mx-n2">
-                    <div class="col px-2">
+                <div id="routeList" class="row mx-n2">
+                    <!-- route card example -->
+                    <!-- <div class="col px-2">
                         <div class="route card">
                             <span class="route-name">0東</span>
                             <span class="stops-name">內湖 - 臺北車站</span>
                         </div>
-                    </div>
-                    <div class="col px-2">
-                        <div class="route card">
-                            <span class="route-name">0東</span>
-                            <span class="stops-name">萬芳社區 - 捷運東門站</span>
-                        </div>
-                    </div>
-                    <div class="col px-2">
-                        <div class="route card">
-                            <span class="route-name">0東</span>
-                            <span class="stops-name">內湖 - 臺北車站</span>
-                        </div>
-                    </div>
-                    <div class="col px-2">
-                        <div class="route card">
-                            <span class="route-name">0東</span>
-                            <span class="stops-name">內湖 - 臺北車站</span>
-                        </div>
-                    </div>
-                    <div class="col px-2">
-                        <div class="route card">
-                            <span class="route-name">0東</span>
-                            <span class="stops-name">內湖 - 臺北車站</span>
-                        </div>
-                    </div>
-                    <div class="col px-2">
-                        <div class="route card">
-                            <span class="route-name">0東</span>
-                            <span class="stops-name">內湖 - 臺北車站</span>
-                        </div>
-                    </div>
-                    <div class="col px-2">
-                        <div class="route card">
-                            <span class="route-name">0東</span>
-                            <span class="stops-name">內湖 - 臺北車站</span>
-                        </div>
-                    </div>
-                    <div class="col px-2">
-                        <div class="route card">
-                            <span class="route-name">0東</span>
-                            <span class="stops-name">內湖 - 臺北車站</span>
-                        </div>
-                    </div>
-                    <div class="col px-2">
-                        <div class="route card">
-                            <span class="route-name">0東</span>
-                            <span class="stops-name">內湖 - 臺北車站</span>
-                        </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="text-center mt-2">
                     <button class="more btn">
@@ -166,6 +115,194 @@
     <script src="./js/fontawesome.js"></script>
     <!-- common -->
     <script src="./js/common.js"></script>
+
+    <script>
+        // 縣市所有的路線資訊
+        let cityRouteList = []
+        // 目前選取的路線
+        let routeInfo = []
+        // 目前為去程 or 回程
+        let directionType = 0
+        // 去程公車站牌
+        let deaprturStopList = []
+        // 返程公車站牌
+        let returnStopList = []
+
+        if (!localStorage.getItem('cityList')) {
+            // 抓取縣市資料
+            getCityList().then(() => {
+                setCitySelect()
+            })
+        } else {
+            setCitySelect()
+        }
+
+        function show(type) {
+            document.getElementById('citySearch').style.display = 'none'
+            document.getElementById('stopSearch').style.display = 'none'
+            document.getElementById(type).style.display = 'block'
+        }
+
+        // 寫入縣市
+        function setCitySelect() {
+            const city = document.getElementById('city');
+            let optionText = '<option value="">請選擇</option>';
+            const cityList = JSON.parse(localStorage.getItem('cityList'));
+            cityList.forEach(item => {
+                optionText += `<option value="${item.City}">${item.CityName}</option>`
+            });
+            city.innerHTML = optionText;
+        }
+
+        // 顯示路線名稱
+        function showRouteList() {
+            const routeList = document.getElementById('routeList');
+            const citySelect = document.getElementById('city').value;
+            let routeSelect = document.getElementById('route').value;
+            let routeText = '';
+            let query = {}
+            if (routeSelect === '請選擇') {
+                document.getElementById('route').value = 11
+                routeSelect = 11
+            }
+            query.filter = `BusRouteType eq ${routeSelect}`
+            query.top = 12
+            getBusResult('Route/City/', [citySelect], query).then((data) => {
+                cityRouteList = data
+                data.forEach(item => {
+                    let text = ''
+                    if (item.DepartureStopNameZh && item.DepartureStopNameZh) {
+                        text = `${item.DepartureStopNameZh} - ${item.DestinationStopNameZh}`
+                    } else {
+                        text = `往${item.DestinationStopNameZh || item.DestinationStopNameZh || ''}`
+                    }
+
+                    routeText += `<div class="col px-2">
+                        <div class="route card" onclick="showBusInfo('${item.RouteUID}')">
+                            <span class="route-name">${item.RouteName.Zh_tw}</span>
+                            <span class="stops-name">${text}</span>
+                        </div>
+                    </div>`
+                })
+                routeList.innerHTML = routeText;
+
+                // 判斷是否有接駁車
+                const typeResult = data.find(item => {
+                    return item.BusRouteType == 12
+                })
+                if (typeResult) {
+                    document.getElementById('route').disabled = false
+                } else {
+                    document.getElementById('route').disabled = true
+                }
+                
+            })
+        }
+
+        // 顯示公車資訊
+        function showBusInfo(routeUID) {
+            const citySelect = document.getElementById('city').value;
+            const departureBtn = document.getElementById('departureBtn');
+            const returnBtn = document.getElementById('returnBtn');
+
+            // 去程返程按鈕
+            routeInfo = cityRouteList.find(item => {
+                return item.RouteUID === routeUID
+            })
+
+            // 路線資訊
+            getBusResult('StopOfRoute/City/', [citySelect, routeInfo.RouteName.Zh_tw]).then((data) => {
+                // 去返程欄位設定 (API)
+                const directionInfo = {
+                    0: '去程',
+                    1: '返程',
+                    2: '迴圈',
+                    255: '未知'
+                } 
+
+                // 去返程按鈕 + 站牌顯示
+                let departureB = false
+                let returnB = false
+                // Reset 站牌資訊
+                departureStopList = []
+                returnStopList = []
+                
+                data.forEach((item) => {
+                    if (item.Direction === 0 || item.Direction === 2) {
+                        departureBtn.innerText = `去程：往${routeInfo.DestinationStopNameZh}` || ''
+                        departureStopList = item.Stops
+                        departureB = true
+                    }
+                    else if (item.Direction === 1) {
+                        returnBtn.innerText = `返程：往${routeInfo.DepartureStopNameZh}` || ''
+                        returnStopList = item.Stops
+                        returnB = true
+                    }
+                })
+                showBusStopList('departure')
+                departureBtn.style.display = departureB ? 'inline-block' : 'none'
+                returnBtn.style.display = returnB ? 'inline-block' : 'none'
+            })
+        }
+
+        // 顯示指定路線公車站牌
+        async function showBusStopList(direction) {
+            let stops = []
+            let stopText = ''
+            const realtimeBusInfo = document.getElementById('realtimeBusInfo');
+            if (direction === 'departure') {
+                directionType = 0
+                stops = departureStopList
+            } else if (direction === 'return') {
+                directionType = 1
+                stops = returnStopList
+            }
+            if (stops.length) {
+                stops.forEach(stop => {
+                    stopText += `<tr id="stop-${stop.StopUID}">` +
+                        `<td class="stopName">${stop.StopName.Zh_tw}</td>` +
+                        `<td class="stopTime"></td>` +
+                        `<td class="stopStatus"></td></tr>`
+                })
+                realtimeBusInfo.innerHTML = stopText
+                realTime() // 公車即時資訊
+            }
+        }
+
+        // 公車即時資訊
+        function realTime() {
+            const citySelect = document.getElementById('city').value;
+            const realtimeBusInfo = document.getElementById('realtimeBusInfo');
+            let query = {}
+            let stops = []
+            let stopText = ''
+            
+            query.filter = directionType ? 'Direction eq 1' : 'Direction eq 0 or Direction eq 2'
+            getBusResult('EstimatedTimeOfArrival/City/', [citySelect, routeInfo.RouteName.Zh_tw], query).then((data) => {
+                console.log(6666, data)
+                data.forEach((item) => {
+                    const stopUID = document.getElementById(`stop-${item.StopUID}`);
+                    if (stopUID) {
+                        // 發車時間
+                        stopUID.querySelector('.stopTime').innerText = item.EstimateTime ? showTime(item.EstimateTime) : showStopStatus(item.StopStatus)
+                    }
+                })
+            })
+
+            // 公車目前所在站牌
+            getBusResult('RealTimeNearStop/Streaming/City/', [citySelect, routeInfo.RouteName.Zh_tw], query).then((data) => {
+                console.log(7777, data)
+                data.forEach((item) => {
+                    const stopUID = document.getElementById(`stop-${item.StopUID}`);
+                    if (item.A2EventType) {
+                        stopUID.querySelector('.stopStatus').innerText = item.PlateNumb
+                    } else {
+                        stopUID.nextElementSibling.querySelector('.stopStatus').innerText = item.PlateNumb
+                    }
+                })
+            })
+        }
+    </script>
 </body>
 
 </html>
