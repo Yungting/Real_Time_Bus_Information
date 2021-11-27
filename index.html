@@ -14,32 +14,55 @@
 
 <body>
     <div class="container" style="margin: 0 auto; padding: 20px 0;">
+        <div class="mb-3">
+            <input type="radio" value="city" name="search" onclick="show('citySearch')" />
+            <span>城市</span>
+            <input type="radio" value="stop" name="search" onclick="show('stopSearch')" checked/>
+            <span>站牌</span>
+        </div>
         <select id="city" onchange="showRouteList()"></select>
-        <select id="route" onchange="showRouteList()">
-            <option value="">請選擇路線類型</option>
-            <option value="11">市區公車</option>
-            <option value="12">公路客運</option>
-            <option value="13">國道客運</option>
-            <option value="14">接駁車</option>
-        </select>
-        <br>
-        <br>
-        <div id="routeList" class="row text-center"></div>
-        <br>
-        <div>
-            <button class="btn btn-primary" id="departureBtn" onclick="showBusStopList('departure')"></button>
-            <button class="btn btn-primary" id="returnBtn" onclick="showBusStopList('return')"></button>
-            <br><br>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>站牌</th>
-                        <th>發車時間</th>
-                        <th><a href="">下一班</a></th>
-                    </tr>
-                </thead>
-                <tbody id="realtimeBusInfo"></tbody>
-            </table>
+        <div id="citySearch">
+            <select id="route" onchange="showRouteList()">
+                <option value="">請選擇路線類型</option>
+                <option value="11">市區公車</option>
+                <option value="12">公路客運</option>
+                <option value="13">國道客運</option>
+                <option value="14">接駁車</option>
+            </select>
+            <br>
+            <br>
+            <div id="routeList" class="row text-center"></div>
+            <br>
+            <div>
+                <button class="btn btn-primary" id="departureBtn" onclick="showBusStopList('departure')"></button>
+                <button class="btn btn-primary" id="returnBtn" onclick="showBusStopList('return')"></button>
+                <br><br>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>站牌</th>
+                            <th>發車時間</th>
+                            <th><a href="">下一班</a></th>
+                        </tr>
+                    </thead>
+                    <tbody id="realtimeBusInfo"></tbody>
+                </table>
+            </div>
+        </div>
+        <div id="stopSearch">
+            <div class="row">
+              <div class="form-group col">
+                <label for="staticEmail" class="col-form-label">起始站</label>
+                <input type="text" class="form-control" id="staticEmail">
+              </div>
+              <div class="form-group col">
+                <label for="inputPassword" class="col-form-label">目的站</label>
+                <input type="text" class="form-control" id="inputPassword">
+              </div>
+              <div class="col jutify-content-bottom">
+                <button type="button" class="btn btn-primary">搜尋</button>
+              </div>
+            </div>
         </div>
     </div>
 
@@ -75,6 +98,12 @@
             })
         } else {
             setCitySelect()
+        }
+
+        function show(type) {
+            document.getElementById('citySearch').style.display = 'none'
+            document.getElementById('stopSearch').style.display = 'none'
+            document.getElementById(type).style.display = 'block'
         }
 
         // 寫入縣市

@@ -1,3 +1,7 @@
-.btn {
+#citySearch .btn {
+    display: none;
+}
+
+#citySearch {
     display: none;
 }
