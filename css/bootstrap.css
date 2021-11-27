@@ -152,8 +152,8 @@ sup {
 }
 
 a {
-  color: #007bff;
-  text-decoration: none;
+  color: #4d4d4d;
+  text-decoration: underline;
   background-color: transparent;
 }
 
@@ -361,7 +361,7 @@ h1, .h1 {
 }
 
 h2, .h2 {
-  font-size: 2rem;
+  font-size: 24px;
 }
 
 h3, .h3 {

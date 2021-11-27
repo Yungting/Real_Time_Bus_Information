@@ -5,3 +5,248 @@
 #citySearch {
     display: none;
 }
+
+/* Style CSS */
+
+/* Body */
+*,
+*:before,
+*:after {
+    font-family: 'Poppins', sans-serif;
+    box-sizing: border-box;
+}
+
+/* color */
+:root {
+    --theme-primary: #C5FE7D;
+    --theme-black: #000;
+    --theme-white: #fff;
+    --theme-secondary-dark: #4D4D4D; 
+    --theme-secondary-light: #F4F4F4; 
+    --theme-tertiary: #6ACA85;
+    --text-color-gray1: #C4C4C4;
+    --text-color-gray2: #ADB3BC;
+}
+
+/* Font */
+.font-caption {
+    color: var(--theme-secondary-dark);
+    font-size: 20px;
+}
+
+.font-label1 {
+    font-size: 1.125rem;
+}
+
+.font-label2 {
+    font-size: 1.25rem;
+}
+
+/* Custom Radio */
+.custom-form-label {
+    display: grid;
+    grid-template-columns: 1em auto;
+    gap: 10px;
+    color: var(--text-color-gray1);
+}
+
+input[type="radio"] {
+    -webkit-appearance: none;
+    appearance: none;
+    background-color: #fff;
+    margin: 0;
+    color: var(--text-color-gray1);
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 0.15em solid var(--text-color-gray1);
+    border-radius: 50%;
+    transform: translateY(0.25em);
+    display: grid;
+    place-content: center;
+}
+
+.custom-form-label + .custom-form-label {
+    margin-top: 1em;
+}
+
+input[type="radio"]::before {
+    content: "";
+    width: 0.45em;
+    height: 0.45em;
+    border-radius: 50%;
+    transform: scale(0);
+    transition: 120ms transform ease-in-out;
+    box-shadow: inset 1em 1em var(--theme-black);
+}
+
+input[type="radio"]:checked {
+    border-color: var(--theme-black);
+}
+
+input[type="radio"]:checked ~ span {
+    color: var(--theme-black);
+}
+
+input[type="radio"]:checked::before {
+    transform: scale(1);
+}
+
+/* Custom Input */
+.custom-select, .custom-input {
+    border: 0;
+    background: none;
+    border-bottom: 1px solid var(--text-color-gray1);
+    border-radius: 0;
+    padding: 16px 0px;
+    padding-right: 28px;
+    height: auto;
+}
+
+.custom-select {
+    width: 180px;
+}
+
+.custom-select:focus, 
+.custom-input:focus,
+.custom-select:focus-visible, 
+.custom-input:focus-visible {
+    box-shadow: none;
+    outline: none;
+    border-color: var(--theme-black);
+}
+
+.select-icon {
+    position: absolute;
+    top: calc(50% - 10px);
+    right: 23px;
+    font-size: 0.8rem;
+    color: var(--text-color-gray1);
+}
+
+.custom-select:focus ~ .select-icon {
+    color: var(--theme-black);
+}
+
+/* Header */
+.header-black-background {
+    background-color: var(--theme-black);
+    top: 0;
+    left: 0;
+    height: 310px;
+    width: 100%;
+    z-index: -1;
+}
+
+.header {
+    margin-top: 70px;
+    padding-left: 77px;
+}
+
+.logo h1 {
+    font-size: 22px;
+    color: var(--theme-white);
+    font-weight: bold;
+}
+
+.logo .underline {
+    height: 1px;
+    background-color: var(--theme-white);
+}
+
+/* Search */
+.search {
+    width: 100%;
+    padding: 32px 64px 64px;
+    margin-top: 24px;
+    background-color: var(--theme-white);
+    box-shadow: -23px 0px 13px rgba(0, 0, 0, 0.08);
+}
+
+.search-btn {
+    background-color: var(--theme-primary);
+    max-width: 248px;
+    width: 25%;
+}
+
+/* Search Result - City */
+.search-result-city {
+    margin-top: 105px;
+}
+
+.result-title {
+    position: relative;
+    padding-left: 34px;
+}
+
+.result-title::before {
+    content: "";
+    position: absolute;
+    top: calc(50% - 12px);
+    left: 0;
+    width: 20px;
+    height: 20px;
+    background-color: var(--theme-black);
+}
+
+.result-title .city {
+    padding-right: 16px;
+}
+
+.result-title .city::after {
+    content: "";
+    position: absolute;
+    height: calc(100% - 5px);
+    width: 1px;
+    top: 2px;
+    right: 8px;
+    background-color: var(--theme-black);
+}
+
+.show-all {
+    margin-left: 74px;
+}
+
+
+/* RWD */
+@media (max-width: 1200px) {
+
+}
+
+@media (max-width: 992px) {
+    .header {
+        padding-left: 0;
+        text-align: center;   
+    }
+
+    .search-type {
+        text-align: center;
+    }
+    
+    .search {
+        padding: 32px 32px 64px;
+    }
+    
+    .custom-select {
+        width: 110px;
+    }
+}
+
+@media (max-width: 768px) {
+    .container {
+        max-width: 100%;
+        padding-right: 28px;
+        padding-left: 28px;
+    }
+
+    .search-btn {
+        width: auto;
+    }
+
+    .search-result-city {
+        max-width: 500px;
+    }
+}
+
+@media (max-width: 576px) {
+
+}
