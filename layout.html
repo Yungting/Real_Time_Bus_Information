@@ -123,16 +123,10 @@
         let cityRouteList = []
         // 所有縣市列表
         let cityList = []
-        // 目前選取的路線
+        // 目前選取的城市
         let currentCity = {}
         // 目前選取的路線
         let routeInfo = []
-        // 目前為去程 or 回程
-        let directionType = 0
-        // 去程公車站牌
-        let deaprturStopList = []
-        // 返程公車站牌
-        let returnStopList = []
         // 顯示所有路線
         let showAllRoute = false
 
@@ -176,7 +170,9 @@
             let routeSelect = document.getElementById('route').value;
             
             // 顯示"下滑更多"按鈕
-            document.getElementById('showMore').style.display = 'inline-block';
+            if (cityRouteList.length > 12) {
+                document.getElementById('showMore').style.display = 'inline-block';
+            }
             showAllRoute = false;
 
             // 搜尋參數
@@ -232,7 +228,7 @@
                     text = `往${item.DestinationStopNameZh || item.DestinationStopNameZh || ''}`
                 }  
                 routeText += `<div class="col px-2">
-                    <div class="route card" onclick="showBusInfo('${item.RouteUID}')">
+                    <div class="route card" onclick="toBusRealTime('${item.RouteUID}')">
                         <span class="route-name">${item.RouteName.Zh_tw}</span>
                         <span class="stops-name">${text}</span>
                     </div>
@@ -240,6 +236,13 @@
                 num += 1
             })
             routeList.innerHTML = routeText;
+        }
+
+        // 至公車即時資訊頁
+        function toBusRealTime (routeUID) {
+            localStorage.setItem('cityRouteList', JSON.stringify(cityRouteList))
+            localStorage.setItem('currentCity', JSON.stringify(currentCity))
+            window.location.href = 'bus-result.html?routeUID=' + routeUID
         }
     </script>
 </body>

@@ -257,6 +257,7 @@ input[type="radio"]:checked::before {
 .more {
     color: var(--text-color-gray1);
     cursor: pointer;
+    display: none;
 }
 
 .more span {
@@ -269,12 +270,19 @@ input[type="radio"]:checked::before {
     height: 125px;
 }
 
+#busResult {
+    padding: 0 65px;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
 #busResult .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     height: 125px;
     margin-top: 0;
+    padding-left: 0;
 }
 
 .toolbar-icon {
@@ -289,6 +297,8 @@ input[type="radio"]:checked::before {
 
 #bus-info {
     margin-top: 50px;
+    margin-left: 0;
+    padding: 0;
 }
 
 .direction-btn .btn {
@@ -348,12 +358,16 @@ input[type="radio"]:checked::before {
     border-left: 3px solid #6ACA85;
 }
 
-
 .arrival-time {
     font-size: 14px;
     color: var(--text-color-gray2);
     padding: 1px 16px;
     background-color: var(--theme-secondary-light);
+}
+
+#bus-info #updateTime td {
+    padding: 16px;
+    text-align: right;
 }
 
 /* RWD */

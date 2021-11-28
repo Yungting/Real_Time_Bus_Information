@@ -22,7 +22,7 @@
 
 <body class="bg-gray">
     <div class="header-background position-absolute busResult"></div>
-    <div id="busResult" class="container">
+    <div id="busResult">
         <!-- Header -->
         <div class="header">
             <div class="logo font-weight-bold d-inline-block">
@@ -31,12 +31,12 @@
             </div>
             <div class="toolbar">
                 <a href="#" class="mr-3"><i class="toolbar-icon" data-feather="alert-circle"></i></a>
-                <a href="#"><i class="toolbar-icon" data-feather="rotate-ccw"></i></a>
+                <a href="javascript: void(0)" onclick="showBusStopList()"><i class="toolbar-icon" data-feather="rotate-ccw"></i></a>
             </div>
         </div>
 
         <!-- Result -->
-        <div id="bus-info">
+        <div id="bus-info" class="container">
             <div class="font-label2">
                 【台南市】公車搜尋結果
             </div>
@@ -131,9 +131,24 @@
     <script src="./js/common.js"></script>
 
     <script>
+        // 參數帶入的 routeUID
+        const urlParams = new URLSearchParams(window.location.search);
+        const routeUID = urlParams.get('routeUID');
+        // 抓取路線列表
+        const cityRouteList =  JSON.parse(localStorage.getItem('cityRouteList'))
+        // 抓取目前縣市
+        const currentCity =  JSON.parse(localStorage.getItem('currentCity'))
+        // 目前為去程 or 回程
+        let directionType = 0
+        // 去程公車站牌
+        let deprturStopList = []
+        // 返程公車站牌
+        let returnStopList = []
+
+        if (routeUID) showBusInfo(routeUID)
+
         // 顯示公車資訊
         function showBusInfo(routeUID) {
-            const citySelect = document.getElementById('city').value;
             const departureBtn = document.getElementById('departureBtn');
             const returnBtn = document.getElementById('returnBtn');
 
@@ -143,7 +158,7 @@
             })
 
             // 路線資訊
-            getBusResult('StopOfRoute/City/', [citySelect, routeInfo.RouteName.Zh_tw]).then((data) => {
+            getBusResult('StopOfRoute/City/', [currentCity.City, routeInfo.RouteName.Zh_tw]).then((data) => {
                 // 去返程欄位設定 (API)
                 const directionInfo = {
                     0: '去程',
@@ -161,12 +176,12 @@
                 
                 data.forEach((item) => {
                     if (item.Direction === 0 || item.Direction === 2) {
-                        departureBtn.innerText = `去程：往${routeInfo.DestinationStopNameZh}` || ''
+                        departureBtn.innerText = `往${routeInfo.DestinationStopNameZh}` || ''
                         departureStopList = item.Stops
                         departureB = true
                     }
                     else if (item.Direction === 1) {
-                        returnBtn.innerText = `返程：往${routeInfo.DepartureStopNameZh}` || ''
+                        returnBtn.innerText = `往${routeInfo.DepartureStopNameZh}` || ''
                         returnStopList = item.Stops
                         returnB = true
                     }
@@ -178,7 +193,7 @@
         }
 
         // 顯示指定路線公車站牌
-        async function showBusStopList(direction) {
+        function showBusStopList(direction) {
             let stops = []
             let stopText = ''
             const realtimeBusInfo = document.getElementById('realtimeBusInfo');
@@ -188,6 +203,8 @@
             } else if (direction === 'return') {
                 directionType = 1
                 stops = returnStopList
+            } else if (!direction) {
+                stops = directionType == 1 ? returnStopList : departureStopList
             }
             if (stops.length) {
                 stops.forEach(stop => {
@@ -196,7 +213,8 @@
                         `<td class="stopTime"></td>` +
                         `<td class="stopStatus"></td></tr>`
                 })
-                stopText += `<tr id="updateTime"><td colspan="3" class"text-right">${getNowTime()}</td></tr>`
+                // 本頁會自動更新，上次更新時間為
+                stopText += `<tr id="updateTime"><td colspan="3">上次更新時間為 ${getNowTime()}</td></tr>`
                 realtimeBusInfo.innerHTML = stopText
                 realTime() // 公車即時資訊
             }
@@ -210,14 +228,13 @@
 
         // 公車即時資訊
         function realTime() {
-            const citySelect = document.getElementById('city').value;
             const realtimeBusInfo = document.getElementById('realtimeBusInfo');
             let query = {}
             let stops = []
             let stopText = ''
             
             query.filter = directionType ? 'Direction eq 1' : 'Direction eq 0 or Direction eq 2'
-            getBusResult('EstimatedTimeOfArrival/City/', [citySelect, routeInfo.RouteName.Zh_tw], query).then((data) => {
+            getBusResult('EstimatedTimeOfArrival/City/', [currentCity.City, routeInfo.RouteName.Zh_tw], query).then((data) => {
                 console.log(6666, data)
                 data.forEach((item) => {
                     const stopUID = document.getElementById(`stop-${item.StopUID}`);
@@ -229,7 +246,7 @@
             })
 
             // 公車目前所在站牌
-            getBusResult('RealTimeNearStop/Streaming/City/', [citySelect, routeInfo.RouteName.Zh_tw], query).then((data) => {
+            getBusResult('RealTimeNearStop/Streaming/City/', [currentCity.City, routeInfo.RouteName.Zh_tw], query).then((data) => {
                 console.log(7777, data)
                 data.forEach((item) => {
                     const stopUID = document.getElementById(`stop-${item.StopUID}`);
