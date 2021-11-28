@@ -144,15 +144,14 @@
         let deprturStopList = []
         // 返程公車站牌
         let returnStopList = []
+        // 去返程按鈕
+        const departureBtn = document.getElementById('departureBtn');
+        const returnBtn = document.getElementById('returnBtn');
 
         if (routeUID) showBusInfo(routeUID)
 
         // 顯示公車資訊
         function showBusInfo(routeUID) {
-            const departureBtn = document.getElementById('departureBtn');
-            const returnBtn = document.getElementById('returnBtn');
-
-            // 去程返程按鈕
             routeInfo = cityRouteList.find(item => {
                 return item.RouteUID === routeUID
             })
@@ -197,12 +196,17 @@
             let stops = []
             let stopText = ''
             const realtimeBusInfo = document.getElementById('realtimeBusInfo');
+
             if (direction === 'departure') {
                 directionType = 0
                 stops = departureStopList
+                departureBtn.classList.add('active')
+                returnBtn.classList.remove("active")
             } else if (direction === 'return') {
                 directionType = 1
                 stops = returnStopList
+                returnBtn.classList.add('active')
+                departureBtn.classList.remove("active")
             } else if (!direction) {
                 stops = directionType == 1 ? returnStopList : departureStopList
             }
@@ -235,7 +239,6 @@
             
             query.filter = directionType ? 'Direction eq 1' : 'Direction eq 0 or Direction eq 2'
             getBusResult('EstimatedTimeOfArrival/City/', [currentCity.City, routeInfo.RouteName.Zh_tw], query).then((data) => {
-                console.log(6666, data)
                 data.forEach((item) => {
                     const stopUID = document.getElementById(`stop-${item.StopUID}`);
                     if (stopUID) {
@@ -247,13 +250,12 @@
 
             // 公車目前所在站牌
             getBusResult('RealTimeNearStop/Streaming/City/', [currentCity.City, routeInfo.RouteName.Zh_tw], query).then((data) => {
-                console.log(7777, data)
                 data.forEach((item) => {
                     const stopUID = document.getElementById(`stop-${item.StopUID}`);
                     if (item.A2EventType) {
                         stopUID.querySelector('.stopStatus').innerText = item.PlateNumb
                     } else {
-                        stopUID.nextElementSibling.querySelector('.stopStatus').innerText = item.PlateNumb
+                        if (stopUID) stopUID.nextElementSibling.querySelector('.stopStatus').innerText = item.PlateNumb
                     }
                 })
             })
