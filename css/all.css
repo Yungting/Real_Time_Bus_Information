@@ -28,6 +28,10 @@
     --text-color-gray2: #ADB3BC;
 }
 
+.bg-gray {
+    background-color: var(--theme-secondary-light);
+}
+
 /* Font */
 .font-caption {
     color: var(--theme-secondary-dark);
@@ -128,7 +132,7 @@ input[type="radio"]:checked::before {
 }
 
 /* Header */
-.header-black-background {
+.header-background {
     background-color: var(--theme-black);
     top: 0;
     left: 0;
@@ -169,7 +173,8 @@ input[type="radio"]:checked::before {
 }
 
 /* Search Result - City */
-.search-result-city {
+#searchResultCity {
+    display: none;
     padding: 42px 14px;
 }
 
@@ -203,7 +208,7 @@ input[type="radio"]:checked::before {
 }
 
 .show-all {
-    margin-left: 74px;
+    color: var(--text-color-gray1);
 }
 
 .route-list {
@@ -225,10 +230,24 @@ input[type="radio"]:checked::before {
     transition: .3s;
 }
 
+.route.card .stops-name {
+    color: var(--theme-secondary-dark);
+}
+
 .route.card:hover {
     border-color: transparent;
     box-shadow: 0px 0px 0px 5px var(--theme-primary);
     transform: scale(1.02);
+}
+
+.route.card.active {
+    border-color: transparent;
+    background-color: var(--theme-primary);
+}
+
+.route.card.active:hover {
+    box-shadow: none;
+    transform: none;
 }
 
 .route.card .route-name {
@@ -243,6 +262,98 @@ input[type="radio"]:checked::before {
 .more span {
     margin-left: 8px;
     font-size: 0.8rem;
+}
+
+/* Bus Result */
+.busResult.header-background {
+    height: 125px;
+}
+
+#busResult .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 125px;
+    margin-top: 0;
+}
+
+.toolbar-icon {
+    width: 32px;
+    height: 32px;
+    color: var(--theme-white);
+}
+
+.toolbar-icon:hover {
+    color: var(--theme-primary);
+}
+
+#bus-info {
+    margin-top: 50px;
+}
+
+.direction-btn .btn {
+    background-color: var(--theme-secondary-dark);
+    border-radius: 0;
+    width: 100%;
+    color: rgb(255 255 255 / 50%);
+    height: 70px;
+}
+
+.direction-btn .btn.active {
+    color: var(--theme-white)
+}
+
+#bus-info .table {
+    background-color: var(--theme-white);
+    font-size: 17px;
+}
+
+#bus-info .table thead {
+    border-bottom: 2.41067px solid #C4C4C4;
+}
+
+#bus-info .table td {
+    padding: 27px 12px;
+}
+
+#bus-info .table .stopName {
+    padding-left: 27px;
+    width: 40%;
+}
+
+#bus-info .table .stopTime {
+    text-align: center;
+    width: 30%;
+}
+
+#bus-info .table .stopStatus {
+    text-align: center;
+    width: 30%;
+}
+
+#bus-info .table .stopStatus {
+    text-align: center;
+    width: 30%;
+    padding: 1px 0px;
+}
+
+.stopStatus .circle {
+    border-radius: 50%;
+    border: 2px solid;
+    width: 20px;
+    height: 20px;
+}
+
+.stopStatus .vl {
+    border-left: 3px solid #6ACA85;
+}
+
+
+.arrival-time {
+    font-size: 14px;
+    color: var(--text-color-gray2);
+    padding: 1px 16px;
+    background-color: var(--theme-secondary-light);
 }
 
 /* RWD */

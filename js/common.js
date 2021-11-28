@@ -1,3 +1,6 @@
+// Icon
+feather.replace()
+
 // 呼叫公車 API
 function getBusResult(url, query, data) {
     let queryA = '';
