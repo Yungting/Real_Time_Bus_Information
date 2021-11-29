@@ -290,9 +290,9 @@
                     const stopUID = document.getElementById(`stop-${item.StopUID}`);
                     if (stopUID) {
                         if (item.A2EventType) {
-                            stopUID.querySelector('.stopStatus').innerText = item.PlateNumb
+                            stopUID.querySelector('.stopStatus').innerHTML = `<div><span class="bus-Number">${item.PlateNumb}</span></div>`
                         } else {
-                            stopUID.nextElementSibling.querySelector('.stopStatus').innerText = item.PlateNumb
+                            stopUID.nextElementSibling.querySelector('.stopStatus').innerHTML = `<div><span class="bus-Number">${item.PlateNumb}</span></div>`
                         }
                     }
                 })

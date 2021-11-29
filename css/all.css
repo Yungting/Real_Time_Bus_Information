@@ -357,9 +357,9 @@ input[type="radio"]:checked::before {
     width: 30%;
 }
 
-#realtimeBusInfo td.stopStatus {
+/* #realtimeBusInfo td.stopStatus {
     padding: 1px 0px;
-}
+} */
 
 .stopStatus .circle {
     border-radius: 50%;
@@ -369,7 +369,14 @@ input[type="radio"]:checked::before {
 }
 
 .stopStatus .vl {
-    border-left: 3px solid #6ACA85;
+    border-left: 3px solid var(--theme-tertiary);
+}
+
+.bus-Number {
+    padding: 4px 16px;
+    border-radius: 4px;
+    color: var(--theme-secondary-dark);
+    background-color: var(--theme-tertiary);
 }
 
 .arrival-time {
