@@ -168,12 +168,6 @@
         function getResult() {
             const citySelect = document.getElementById('city').value;
             let routeSelect = document.getElementById('route').value;
-            
-            // 顯示"下滑更多"按鈕
-            if (cityRouteList.length > 12) {
-                document.getElementById('showMore').style.display = 'inline-block';
-            }
-            showAllRoute = false;
 
             // 搜尋參數
             let query = {}
@@ -214,12 +208,16 @@
         // 顯示公車路線
         function showRouteList (searchText) {
             const routeList = document.getElementById('routeList');
+            document.getElementById('showMore').style.display = 'none';
             let num = 0;
             let routeText = '';
             cityRouteList.forEach((item) => {
                 let text = ''
                 // 一開始只顯示 12 筆結果
                 if (!showAllRoute && num > 11) {
+                    // 顯示"下滑更多"按鈕
+                    document.getElementById('showMore').style.display = 'inline-block';
+                    showAllRoute = false;
                     return
                 }
                 if (item.DepartureStopNameZh && item.DepartureStopNameZh) {

@@ -51,7 +51,16 @@ function showStopStatus(stopStatus) {
 function showTime(sec) {
     let min = 0
     min = Math.round(sec / 60)
-    return min > 0 ? min + '分' : '進站中'
+    switch (min) {
+        case 1:
+            return "準備進站"
+
+        case 0:
+            return "進站中"
+        
+        default:
+            return min + '分'
+    }
 }
 
 // API Header 

@@ -25,10 +25,12 @@
     <div id="busResult">
         <!-- Header -->
         <div class="header">
-            <div class="logo font-weight-bold d-inline-block">
+            <div class="logo font-weight-bold d-lg-inline-block d-none">
                 <h1>Taiwan Bus</h1>
                 <div class="underline"></div>
             </div>
+            <div class="d-lg-none" onclick="history.back()"><i class="toolbar-icon" data-feather="arrow-left"></i></div>
+            <h2 id="cityTitle" class="d-lg-none position-absolute font-weight-bold">台南市</h2>
             <div class="toolbar">
                 <a href="#" class="mr-3"><i class="toolbar-icon" data-feather="alert-circle"></i></a>
                 <a href="javascript: void(0)" onclick="showBusStopList()"><i class="toolbar-icon" data-feather="rotate-ccw"></i></a>
@@ -37,11 +39,11 @@
 
         <!-- Result -->
         <div id="bus-info" class="container">
-            <div class="font-label2">
-                【台南市】公車搜尋結果
+            <div id="cityResultTitle" class="font-label2">
+                <!-- 【台南市】公車搜尋結果 -->
             </div>
             <!-- 符合路線 -->
-            <div class="container p-0 route-list mt-3">
+            <div class="container route-list mt-3">
                 <div id="routeList" class="row mx-n2">
                     <!-- route card example -->
                     <div class="col px-2">
@@ -50,7 +52,7 @@
                             <span class="stops-name"><div class="text-truncate" title="內湖 - 臺北車站臺北車站臺北車站臺北車站">內湖 - 臺北車站臺北車站臺北車站臺北車站</div></span>
                         </div>
                     </div>
-                    <div class="col px-2">
+                    <!-- <div class="col px-2">
                         <div class="route card">
                             <span class="route-name">0東</span>
                             <span class="stops-name">內湖 - 臺北車站</span>
@@ -70,7 +72,7 @@
                     </div>
                     <div class="col px-2 d-flex align-items-end pl-4">
                         <a class="show-all" href="#">顯示所有公車</a>
-                    </div>
+                    </div> -->
                 </div>
             </div>
 
@@ -148,7 +150,36 @@
         const departureBtn = document.getElementById('departureBtn');
         const returnBtn = document.getElementById('returnBtn');
 
-        if (routeUID) showBusInfo(routeUID)
+        if (routeUID) {
+            showBusInfo(routeUID)
+            showRouteResult(routeUID)
+
+            const cityResultTitle = document.getElementById('cityResultTitle');
+            cityResultTitle.innerText = `【${currentCity.CityName}】公車搜尋結果`
+        }
+
+        // 顯示路線資訊
+        function showRouteResult (routeUID) {
+            let routeText = ''
+            let text = ''
+            const routeList = document.getElementById('routeList');
+            cityRouteList.forEach((item) => {
+                if (item.RouteUID === routeUID) {
+                    if (item.DepartureStopNameZh && item.DepartureStopNameZh) {
+                        text = `${item.DepartureStopNameZh} - ${item.DestinationStopNameZh}`
+                    } else {
+                        text = `往${item.DestinationStopNameZh || item.DestinationStopNameZh || ''}`
+                    }  
+                    routeText += `<div class="col px-2 one">
+                        <div class="route card active" onclick="showBusInfo('${item.RouteUID}')">
+                            <span class="route-name">${item.RouteName.Zh_tw}</span>
+                            <span class="stops-name">${text}</span>
+                        </div>
+                    </div>`
+                }
+            })
+            routeList.innerHTML = routeText;
+        }
 
         // 顯示公車資訊
         function showBusInfo(routeUID) {
@@ -236,6 +267,8 @@
             let query = {}
             let stops = []
             let stopText = ''
+            let url = 'RealTimeNearStop'
+            let apiCity = ['Hsinchu', 'HsinchuCounty', 'MiaoliCounty', 'ChanghuaCounty', 'NantouCounty', 'YunlinCounty', 'ChiayiCounty', 'Chiayi', 'PingtungCounty', 'YilanCounty', 'HualienCounty', 'TaitungCounty', 'PenghuCounty']
             
             query.filter = directionType ? 'Direction eq 1' : 'Direction eq 0 or Direction eq 2'
             getBusResult('EstimatedTimeOfArrival/City/', [currentCity.City, routeInfo.RouteName.Zh_tw], query).then((data) => {
@@ -249,13 +282,16 @@
             })
 
             // 公車目前所在站牌
-            getBusResult('RealTimeNearStop/Streaming/City/', [currentCity.City, routeInfo.RouteName.Zh_tw], query).then((data) => {
+            if (apiCity.indexOf(currentCity.City) > -1) url += '/Streaming'
+            getBusResult(url + '/City/', [currentCity.City, routeInfo.RouteName.Zh_tw], query).then((data) => {
                 data.forEach((item) => {
                     const stopUID = document.getElementById(`stop-${item.StopUID}`);
-                    if (item.A2EventType) {
-                        stopUID.querySelector('.stopStatus').innerText = item.PlateNumb
-                    } else {
-                        if (stopUID) stopUID.nextElementSibling.querySelector('.stopStatus').innerText = item.PlateNumb
+                    if (stopUID) {
+                        if (item.A2EventType) {
+                            stopUID.querySelector('.stopStatus').innerText = item.PlateNumb
+                        } else {
+                            stopUID.nextElementSibling.querySelector('.stopStatus').innerText = item.PlateNumb
+                        }
                     }
                 })
             })

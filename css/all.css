@@ -213,6 +213,7 @@ input[type="radio"]:checked::before {
 
 .route-list {
     margin-top: calc(37px - 0.5rem);
+    padding: 0;
 }
 
 .route-list .col {
@@ -220,6 +221,12 @@ input[type="radio"]:checked::before {
     flex: 0 0 20%;
     max-width: 20%;
     margin-bottom: 32px;
+}
+
+.route-list .col.one {
+    flex: auto;
+    max-width: initial;
+    display: flex;
 }
 
 .route.card {
@@ -266,7 +273,8 @@ input[type="radio"]:checked::before {
 }
 
 /* Bus Result */
-.busResult.header-background {
+.busResult.header-background, 
+#busResult .header {
     height: 125px;
 }
 
@@ -280,9 +288,16 @@ input[type="radio"]:checked::before {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 125px;
     margin-top: 0;
     padding-left: 0;
+}
+
+#cityTitle {
+    display: none;
+    margin: 0;
+    width: 100%;
+    left: 0;  
+    z-index: -1;     
 }
 
 .toolbar-icon {
@@ -341,9 +356,7 @@ input[type="radio"]:checked::before {
     width: 30%;
 }
 
-#bus-info .table .stopStatus {
-    text-align: center;
-    width: 30%;
+#realtimeBusInfo td.stopStatus {
     padding: 1px 0px;
 }
 
@@ -380,9 +393,27 @@ input[type="radio"]:checked::before {
 }
 
 @media (max-width: 992px) {
+    .busResult.header-background, 
+    #busResult .header {
+        height: 100px;
+    }
+
+    #busResult {
+        padding: 0px;
+    }
+
+    #cityTitle {
+        display: block;       
+    }
+
     .header {
         padding-left: 0;
         text-align: center;   
+    }
+
+    #busResult .header {
+        padding: 0 30px;
+        color: var(--theme-white);
     }
 
     .route-list .col {
@@ -401,6 +432,34 @@ input[type="radio"]:checked::before {
     
     .custom-select {
         width: 110px;
+    }
+
+    #bus-info.container {
+        max-width: 100%;
+    }
+
+    #bus-info #cityResultTitle,
+    #bus-info .route-list {
+        padding: 0 60px;
+        max-width: 100%;
+    }
+
+    #bus-info .table tr td:first-child,
+    #bus-info .table tr th:first-child {
+        padding-left: 60px;
+    }
+
+    #bus-info .table tr td:last-child,
+    #bus-info .table tr th:last-child {
+        padding-right: 60px;
+    }
+
+    .table {
+        margin-bottom: 0;
+    }
+
+    .table thead {
+        text-align: center;
     }
 }
 
