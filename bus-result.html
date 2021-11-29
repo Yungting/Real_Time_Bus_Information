@@ -155,7 +155,9 @@
             showRouteResult(routeUID)
 
             const cityResultTitle = document.getElementById('cityResultTitle');
+            const cityHead = document.getElementById('cityTitle');
             cityResultTitle.innerText = `【${currentCity.CityName}】公車搜尋結果`
+            cityHead.innerText = currentCity.CityName
         }
 
         // 顯示路線資訊
