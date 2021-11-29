@@ -235,6 +235,8 @@ input[type="radio"]:checked::before {
     font-size: 16px;
     cursor: pointer;
     transition: .3s;
+    border-color: #D1D5DB;
+    min-width: 200px;
 }
 
 .route.card .stops-name {
@@ -243,8 +245,7 @@ input[type="radio"]:checked::before {
 
 .route.card:hover {
     border-color: transparent;
-    box-shadow: 0px 0px 0px 5px var(--theme-primary);
-    transform: scale(1.02);
+    background-color: var(--theme-secondary-light);
 }
 
 .route.card.active {
